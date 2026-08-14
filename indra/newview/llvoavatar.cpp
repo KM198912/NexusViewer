@@ -9575,7 +9575,7 @@ bool resolve_appearance_version(const LLAppearanceMessageContents& contents, S32
 			contents.mAppearanceVersion << ", param: " <<  contents.mParamAppearanceVersion << LL_ENDL;
 		return false;
 	}
-	if (contents.mParamAppearanceVersion >= 0) // use visual param if available.
+	if (contents.mParamAppearanceVersion > 0) // use visual param if available.
 	{
 		appearance_version = contents.mParamAppearanceVersion;
 	}

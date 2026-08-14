@@ -26,8 +26,8 @@ THE SOFTWARE.
 $/LicenseInfo$
 """
 
-from compatibility import Incompatible, Older, Newer, Same
-from tokenstream import TokenStream
+from indra.ipc.compatibility import Incompatible, Older, Newer, Same
+from indra.ipc.tokenstream import TokenStream
 
 ###
 ### Message Template
@@ -142,7 +142,7 @@ class Message:
         baselen = len(base.blocks)
         samelen = min(selflen, baselen)
             
-        for i in xrange(0, samelen):
+        for i in range(0, samelen):
             selfblock = self.blocks[i]
             baseblock = base.blocks[i]
             
@@ -196,7 +196,7 @@ class Block(object):
         selflen = len(self.variables)
         baselen = len(base.variables)
         
-        for i in xrange(0, min(selflen, baselen)):
+        for i in range(0, min(selflen, baselen)):
             selfvar = self.variables[i]
             basevar = base.variables[i]
             

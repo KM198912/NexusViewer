@@ -58,14 +58,14 @@ def add_indra_lib_path():
                 sys.path.insert(0, dir)
             break
     else:
-        print >>sys.stderr, "This script is not inside a valid installation."
+        print("This script is not inside a valid installation.", file=sys.stderr)
         sys.exit(1)
 
 add_indra_lib_path()
 
 import optparse
 import os
-import urllib
+import urllib.request
 import hashlib
 
 from indra.ipc import compatibility
@@ -90,7 +90,7 @@ def getstatusoutput(command):
 
 
 def die(msg):
-    print >>sys.stderr, msg
+    print(msg, file=sys.stderr)
     sys.exit(1)
 
 MESSAGE_TEMPLATE = 'message_template.msg'
@@ -106,7 +106,7 @@ def retry(times, function, *args, **kwargs):
     for i in range(times):
         try:
             return function(*args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             if i == times - 1:
                 raise e  # we retried all the times we could
 
@@ -141,7 +141,7 @@ def fetch(url):
         return open(file_name).read()
     else:
         # *FIX: this doesn't throw an exception for a 404, and oddly enough the sl.com 404 page actually gets parsed successfully
-        return ''.join(urllib.urlopen(url).readlines())   
+        return urllib.request.urlopen(url).read().decode('utf-8')
 
 def cache_master(master_url):
     """Using the url for the master, updates the local cache, and returns an url to the local cache."""
@@ -153,21 +153,21 @@ def cache_master(master_url):
         and time.time() - os.path.getmtime(master_cache) < MAX_MASTER_AGE):
         return master_cache_url  # our cache is fresh
     # new master doesn't exist or isn't fresh
-    print "Refreshing master cache from %s" % master_url
+    print("Refreshing master cache from %s" % master_url)
     def get_and_test_master():
         new_master_contents = fetch(master_url)
         llmessage.parseTemplateString(new_master_contents)
         return new_master_contents
     try:
         new_master_contents = retry(3, get_and_test_master)
-    except IOError, e:
+    except IOError as e:
         # the refresh failed, so we should just soldier on
-        print "WARNING: unable to download new master, probably due to network error.  Your message template compatibility may be suspect."
-        print "Cause: %s" % e
+        print("WARNING: unable to download new master, probably due to network error.  Your message template compatibility may be suspect.")
+        print("Cause: %s" % e)
         return master_cache_url
     try:
         tmpname = '%s.%d' % (master_cache, os.getpid())
-        mc = open(tmpname, 'wb')
+        mc = open(tmpname, 'w')
         mc.write(new_master_contents)
         mc.close()
         try:
@@ -180,9 +180,9 @@ def cache_master(master_url):
             # a single day.
             os.unlink(master_cache)
             os.rename(tmpname, master_cache)
-    except IOError, e:
-        print "WARNING: Unable to write master message template to %s, proceeding without cache." % master_cache
-        print "Cause: %s" % e
+    except IOError as e:
+        print("WARNING: Unable to write master message template to %s, proceeding without cache." % master_cache)
+        print("Cause: %s" % e)
         return master_url
     return master_cache_url
 
@@ -246,16 +246,16 @@ http://wiki.secondlife.com/wiki/Template_verifier.py
     # both current and master supplied in positional params
     if len(args) == 2:
         master_filename, current_filename = args
-        print "master:", master_filename
-        print "current:", current_filename
+        print("master:", master_filename)
+        print("current:", current_filename)
         master_url = 'file://%s' % master_filename
         current_url = 'file://%s' % current_filename
     # only current supplied in positional param
     elif len(args) == 1:
         master_url = None
         current_filename = args[0]
-        print "master:", options.master_url 
-        print "current:", current_filename
+        print("master:", options.master_url)
+        print("current:", current_filename)
         current_url = 'file://%s' % current_filename
     # nothing specified, use defaults for everything
     elif len(args) == 0:
@@ -269,19 +269,19 @@ http://wiki.secondlife.com/wiki/Template_verifier.py
         
     if current_url is None:
         current_filename = local_template_filename()
-        print "master:", options.master_url
-        print "current:", current_filename
+        print("master:", options.master_url)
+        print("current:", current_filename)
         current_url = 'file://%s' % current_filename
 
     # retrieve the contents of the local template
     current = fetch(current_url)
-    hexdigest = hashlib.sha1(current).hexdigest()
+    hexdigest = hashlib.sha1(current.encode('utf-8')).hexdigest()
     if not options.force_verification:
         # Early exist if the template hasn't changed.
         sha_url = "%s.sha1" % current_url
         current_sha = fetch(sha_url)
         if hexdigest == current_sha:
-            print "Message template SHA_1 has not changed."
+            print("Message template SHA_1 has not changed.")
             sys.exit(0)
 
     # and check for syntax
@@ -296,27 +296,27 @@ http://wiki.secondlife.com/wiki/Template_verifier.py
         return llmessage.parseTemplateString(master)
     try:
         master_parsed = retry(3, parse_master_url)
-    except (IOError, tokenstream.ParseError), e:
+    except (IOError, tokenstream.ParseError) as e:
         if options.mode == 'production':
             raise e
         else:
-            print "WARNING: problems retrieving the master from %s."  % master_url
-            print "Syntax-checking the local template ONLY, no compatibility check is being run."
-            print "Cause: %s\n\n" % e
+            print("WARNING: problems retrieving the master from %s."  % master_url)
+            print("Syntax-checking the local template ONLY, no compatibility check is being run.")
+            print("Cause: %s\n\n" % e)
             return 0
         
     acceptable, compat = compare(
         master_parsed, current_parsed, options.mode)
 
     def explain(header, compat):
-        print header
+        print(header)
         # indent compatibility explanation
-        print '\n\t'.join(compat.explain().split('\n'))
+        print('\n\t'.join(compat.explain().split('\n')))
 
     if acceptable:
         explain("--- PASS ---", compat)
         if options.force_verification == False:
-            print "Updating sha1 to %s" % hexdigest
+            print("Updating sha1 to %s" % hexdigest)
             sha_filename = "%s.sha1" % current_filename
             sha_file = open(sha_filename, 'w')
             sha_file.write(hexdigest)

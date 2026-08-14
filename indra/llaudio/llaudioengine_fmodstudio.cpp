@@ -78,7 +78,7 @@ bool attemptDelayLoad()
 
 static bool sVerboseDebugging = false;
 
-FMOD_RESULT F_CALLBACK windDSPCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int *outchannels);
+FMOD_RESULT F_CALL windDSPCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int *outchannels);
 
 FMOD::ChannelGroup *LLAudioEngine_FMODSTUDIO::mChannelGroups[LLAudioEngine::AUDIO_TYPE_COUNT] = {0};
 
@@ -621,7 +621,7 @@ LLAudioChannelFMODSTUDIO::~LLAudioChannelFMODSTUDIO()
 	cleanup();
 }
 
-static FMOD_RESULT F_CALLBACK channel_callback(FMOD_CHANNELCONTROL *channel, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2)
+static FMOD_RESULT F_CALL channel_callback(FMOD_CHANNELCONTROL *channel, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2)
 {
 	if (controltype == FMOD_CHANNELCONTROL_CHANNEL &&
 		callbacktype == FMOD_CHANNELCONTROL_CALLBACK_END)
@@ -960,7 +960,7 @@ void LLAudioChannelFMODSTUDIO::set3DMode(bool use3d)
 }
 
 
-FMOD_RESULT F_CALLBACK windDSPCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int *outchannels)
+FMOD_RESULT F_CALL windDSPCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int *outchannels)
 {
 	// inbuffer = incomming data.
 	// newbuffer = outgoing data. AKA this DSP's output.

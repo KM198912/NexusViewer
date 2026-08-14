@@ -124,6 +124,7 @@ public:
 	virtual void leaveNonSpatialChannel();
 
 	virtual void leaveChannel(void);
+	void processChannels(bool process) override;
 
 	// Returns the URI of the current channel, or an empty string if not currently in a channel.
 	// NOTE that it will return an empty string if it's in the process of joining a channel.
@@ -438,9 +439,9 @@ protected:
 	//----------------------------------
 	// devices
 	void clearCaptureDevices();
-	void addCaptureDevice(const std::string& name);
+	void addCaptureDevice(const LLVoiceDevice& device);
 	void clearRenderDevices();
-	void addRenderDevice(const std::string& name);
+	void addRenderDevice(const LLVoiceDevice& device);
 	void buildSetAudioDevices(std::ostringstream &stream);
 
 	void getCaptureDevicesSendMessage();
@@ -780,6 +781,7 @@ private:
 	bool		mMicVolumeDirty;
 
 	bool		mVoiceEnabled;
+	bool		mProcessChannels;
 	bool		mWriteInProgress;
 	std::string mWriteString;
 	size_t		mWriteOffset;

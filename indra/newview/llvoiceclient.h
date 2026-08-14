@@ -39,8 +39,19 @@ class LLVOAvatar;
 #include "llcontrol.h"
 
 // devices
+class LLVoiceDevice
+{
+  public:
+    std::string display_name; // friendly value for the user
+    std::string full_name;  // internal value for selection
 
-typedef std::vector<std::string> LLVoiceDeviceList;
+    LLVoiceDevice(const std::string& display_name, const std::string& full_name)
+        :display_name(display_name)
+        ,full_name(full_name)
+    {
+    };
+};
+typedef std::vector<LLVoiceDevice> LLVoiceDeviceList;
 
 
 class LLVoiceClientParticipantObserver
@@ -159,6 +170,7 @@ public:
 	virtual void leaveNonSpatialChannel()=0;
 
 	virtual void leaveChannel(void)=0;
+	virtual void processChannels(bool process) = 0;
 
 	// Returns the URI of the current channel, or an empty string if not currently in a channel.
 	// NOTE that it will return an empty string if it's in the process of joining a channel.
@@ -455,9 +467,14 @@ public:
 	LLVoiceEffectInterface* getVoiceEffectInterface() const;
 	//@}
 
+	void onRegionChanged();
+	void handleSimulatorFeaturesReceived(const LLSD &simulatorFeatures);
+
 protected:
 	LLVoiceModuleInterface* mVoiceModule;
 	LLPumpIO *m_servicePump;
+	std::string mVoiceServerType;
+	boost::signals2::connection mSimulatorFeaturesReceivedSlot;
 
 
 	LLCachedControl<bool> mVoiceEffectEnabled;

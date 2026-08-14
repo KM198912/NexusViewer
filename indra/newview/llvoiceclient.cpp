@@ -31,6 +31,7 @@
 #include "llviewercontrol.h"
 #include "llviewerwindow.h"
 #include "llvoicevivox.h"
+#include "llvoicewebrtc.h"
 #include "llviewernetwork.h"
 #include "llcommandhandler.h"
 #include "llhttpnode.h"
@@ -38,6 +39,8 @@
 #include "llsdserialize.h"
 #include "llkeyboard.h"
 #include "rlvhandler.h"
+#include "llagent.h"
+#include "llimview.h"
 
 const F32 LLVoiceClient::OVERDRIVEN_POWER_LEVEL = 0.7f;
 
@@ -141,25 +144,24 @@ void LLVoiceClient::init(LLPumpIO *pump)
 {
 	// Initialize all of the voice modules
 	m_servicePump = pump;
+	LLWebRTCVoiceClient::getInstance()->processChannels(false);
+	LLWebRTCVoiceClient::getInstance()->init(pump);
 }
 
 void LLVoiceClient::userAuthorized(const std::string& user_id, const LLUUID &agentID)
 {
-	// In the future, we should change this to allow voice module registration
-	// with a table lookup of sorts.
+	gAgent.addRegionChangedCallback(boost::bind(&LLVoiceClient::onRegionChanged, this));
+	// Which backend is actually active is now decided per-region in
+	// handleSimulatorFeaturesReceived(), driven by the region's
+	// SimulatorFeatures "VoiceServerType" - not this local setting. Vivox
+	// stays the default/fallback active module until a region says
+	// otherwise (or never says anything, e.g. VoiceServerType unset).
 	std::string voice_server = gSavedSettings.getString("VoiceServerType");
 	LL_DEBUGS("Voice") << "voice server type " << voice_server << LL_ENDL;
-	if(voice_server == "vivox")
-	{
-		mVoiceModule = (LLVoiceModuleInterface *)LLVivoxVoiceClient::getInstance();
-	}
-	else
-	{
-		mVoiceModule = nullptr;
-		return;
-	}
-	mVoiceModule->init(m_servicePump);
-	mVoiceModule->userAuthorized(user_id, agentID);
+	mVoiceModule = (LLVoiceModuleInterface *)LLVivoxVoiceClient::getInstance();
+	LLVivoxVoiceClient::getInstance()->init(m_servicePump);
+	LLVivoxVoiceClient::getInstance()->processChannels(false);
+	LLVivoxVoiceClient::getInstance()->userAuthorized(user_id, agentID);
 }
 
 void LLVoiceClient::terminate()
@@ -197,6 +199,74 @@ void LLVoiceClient::updateSettings()
     {
         mVoiceModule->updateSettings();
     }
+}
+
+void LLVoiceClient::handleSimulatorFeaturesReceived(const LLSD &simulatorFeatures)
+{
+	std::string voiceServerType = simulatorFeatures["VoiceServerType"].asString();
+	if (voiceServerType.empty())
+	{
+		voiceServerType = "vivox";
+	}
+
+	if (mVoiceServerType != voiceServerType)
+	{
+		LLSD args;
+		args["VOICE_SERVER_TYPE"] = voiceServerType;
+		gIMMgr->addSystemMessage(LLUUID::null, "voicechanging", args);
+		mVoiceServerType = voiceServerType;
+		LLWebRTCVoiceClient::getInstance()->processChannels(false);
+		LLWebRTCVoiceClient::getInstance()->updateSettings();
+		LLVivoxVoiceClient::getInstance()->processChannels(false);
+		LLVivoxVoiceClient::getInstance()->updateSettings();
+		if (mVoiceServerType == "vivox")
+		{
+			mVoiceModule = (LLVoiceModuleInterface *)LLVivoxVoiceClient::getInstance();
+		}
+		else
+		{
+			mVoiceModule = (LLVoiceModuleInterface *)LLWebRTCVoiceClient::getInstance();
+		}
+		mVoiceModule->processChannels(true);
+		mVoiceModule->updateSettings();
+	}
+}
+
+static void simulator_features_received_callback(const LLUUID& region_id)
+{
+	LLViewerRegion *region = gAgent.getRegion();
+	if (region && (region->getRegionID() == region_id))
+	{
+		LLSD simulatorFeatures;
+		region->getSimulatorFeatures(simulatorFeatures);
+		if (LLVoiceClient::getInstance())
+		{
+			LLVoiceClient::getInstance()->handleSimulatorFeaturesReceived(simulatorFeatures);
+		}
+	}
+}
+
+void LLVoiceClient::onRegionChanged()
+{
+	LLViewerRegion *region = gAgent.getRegion();
+	if (region && region->simulatorFeaturesReceived())
+	{
+		LLSD simulatorFeatures;
+		region->getSimulatorFeatures(simulatorFeatures);
+		if (LLVoiceClient::getInstance())
+		{
+			LLVoiceClient::getInstance()->handleSimulatorFeaturesReceived(simulatorFeatures);
+		}
+	}
+	else if (region)
+	{
+		if (mSimulatorFeaturesReceivedSlot.connected())
+		{
+			mSimulatorFeaturesReceivedSlot.disconnect();
+		}
+		mSimulatorFeaturesReceivedSlot =
+				region->setSimulatorFeaturesReceivedCallback(boost::bind(&simulator_features_received_callback, _1));
+	}
 }
 
 //--------------------------------------------------

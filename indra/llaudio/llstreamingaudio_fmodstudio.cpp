@@ -74,7 +74,7 @@ U32 gWaveBufferMinSize = 0;
 F32 gWaveDataBuffer[WAVE_BUFFER_SIZE] = { 0.f };
 U32 gWaveDataBufferSize = 0;
 
-FMOD_RESULT F_CALLBACK waveDataCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int *outchannels)
+FMOD_RESULT F_CALL waveDataCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int *outchannels)
 {
 	if (!length || !inchannels)
 		return FMOD_OK;

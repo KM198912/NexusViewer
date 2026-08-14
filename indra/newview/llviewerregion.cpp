@@ -65,6 +65,7 @@
 #include "llfloaterperms.h"
 #include "llfloaterregioninfo.h"
 #include "llhttpnode.h"
+#include "pipeline.h"
 #include "llregioninfomodel.h"
 #include "llsdutil.h"
 #include "llstartup.h"
@@ -549,7 +550,17 @@ LLViewerRegion::~LLViewerRegion()
 	delete mImpl->mLandp;
 	delete mImpl->mEventPoll;
 	LLHTTPSender::clearSender(mImpl->mHost);
-	
+
+	// gObjectList.killObjects() above can re-queue LLSpatialGroups belonging to this
+	// region's partitions for a geometry rebuild (via markRebuild()), which is why a
+	// one-time clear done earlier (e.g. in disconnectViewer()) isn't sufficient - any
+	// group still referenced by LLPipeline's rebuild queues at this point would outlive
+	// the LLViewerOctreePartition that owns it and trip its destructor's
+	// llassert(mGroups.empty()).
+	if (gPipeline.isInit())
+	{
+		gPipeline.clearAllRebuildGroups();
+	}
 	std::for_each(mImpl->mObjectPartition.begin(), mImpl->mObjectPartition.end(), DeletePointer());
 
 	saveObjectCache();

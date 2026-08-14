@@ -1338,7 +1338,14 @@ LLViewerOctreePartition::LLViewerOctreePartition() :
 	
 LLViewerOctreePartition::~LLViewerOctreePartition()
 {
-	llassert(mGroups.empty());
+	// Not fatal: some group can still be referenced elsewhere (e.g. a pending
+	// LLPipeline rebuild-queue entry) when this partition is torn down. The
+	// loop below safely detaches any survivors from this (about to be deleted)
+	// partition so their own destructor won't touch it later.
+	if (!mGroups.empty())
+	{
+		LL_WARNS() << "LLViewerOctreePartition destroyed with " << mGroups.size() << " group(s) still referenced." << LL_ENDL;
+	}
 	for (auto& entry : mGroups)
 	{
 		entry->mSpatialPartition = nullptr;

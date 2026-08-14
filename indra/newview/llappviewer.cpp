@@ -809,6 +809,13 @@ bool LLAppViewer::init()
 
 	writeDebugInfo();
 
+	// <edit>
+	// Curl must be initialized before any thread is running -- including the
+	// error-handling thread that setupErrorHandling() below starts (when not
+	// using Crashpad), so this has to happen first.
+	AICurlInterface::initCurl();
+	// </edit>
+
 	setupErrorHandling();
 
 	{
@@ -823,7 +830,7 @@ bool LLAppViewer::init()
 	// Start of the application
 	//
 	LLFastTimer::reset();
-	
+
 	// initialize LLWearableType translation bridge.
 	// Memory will be cleaned up in ::cleanupClass()
 	LLTranslationBridge::ptr_t trans = std::make_shared<LLUITranslationBridge>();
@@ -845,10 +852,6 @@ bool LLAppViewer::init()
 	gDirUtilp->setSkinFolder("default", "en-us");
 
 //	initLoggingAndGetLastDuration();
-
-	// <edit>
-	// Curl must be initialized before any thread is running.
-	AICurlInterface::initCurl();
 
 	//
 	// OK to write stuff to logs now, we've now crash reported if necessary
@@ -4924,6 +4927,14 @@ void LLAppViewer::disconnectViewer()
 	// Now we just ask the LLWorld singleton to cleanly shut down.
 	if(LLWorld::instanceExists())
 	{
+		// Drop any pending LLSpatialGroup rebuild references before regions (and their
+		// LLViewerOctreePartitions) are destroyed below, otherwise a group can outlive
+		// the partition that owns it and trip LLViewerOctreePartition::~LLViewerOctreePartition()'s
+		// llassert(mGroups.empty()).
+		if (!gNoRender)
+		{
+			gPipeline.clearAllRebuildGroups();
+		}
 		LLWorld::getInstance()->destroyClass();
 	}
 

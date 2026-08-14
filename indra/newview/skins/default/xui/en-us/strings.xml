@@ -4598,6 +4598,8 @@ If you continue to receive this message, contact the [SUPPORT_SITE].
 
   <string name="voice_morphing_url">http://secondlife.com/landing/voicemorphing</string>
 
+  <string name="voicechanging">Connecting to [VOICE_SERVER_TYPE] Voice System...</string>
+
   <!-- Financial operations strings -->
   <string name="paid_you_ldollars">[NAME] paid you [CURRENCY][AMOUNT] [REASON].</string>
   <string name="paid_you_ldollars_gift">[NAME] paid you [CURRENCY][AMOUNT]: [REASON]</string>

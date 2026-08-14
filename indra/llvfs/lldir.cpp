@@ -532,7 +532,7 @@ std::string LLDir::getExpandedFilename(ELLPath location, const std::string& subd
 		break;
 
 	case LL_PATH_PER_SL_ACCOUNT:
-		prefix = getLindenUserDir();
+		prefix = getLindenUserDir(true);
 		if (prefix.empty())
 		{
 			// if we're asking for the per-SL-account directory but we haven't

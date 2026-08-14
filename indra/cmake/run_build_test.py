@@ -47,7 +47,10 @@ $/LicenseInfo$
 import os
 import sys
 import errno
-import HTMLParser
+try:
+    import HTMLParser
+except ImportError:
+    import html.parser as HTMLParser
 import re
 import signal
 import subprocess
@@ -109,8 +112,8 @@ def main(command, arguments=[], libpath=[], vars={}):
     # Now handle arbitrary environment variables. The tricky part is ensuring
     # that all the keys and values we try to pass are actually strings.
     if vars:
-         log.info("Setting: %s" % ("\n".join(["%s=%s" % (key, value) for key, value in vars.iteritems()])))
-    os.environ.update(dict([(str(key), str(value)) for key, value in vars.iteritems()]))
+         log.info("Setting: %s" % ("\n".join(["%s=%s" % (key, value) for key, value in vars.items()])))
+    os.environ.update(dict([(str(key), str(value)) for key, value in vars.items()]))
     # Run the child process.
     command_list = [command]
     command_list.extend(arguments)

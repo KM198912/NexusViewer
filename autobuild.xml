@@ -866,11 +866,11 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>50ce25e855c10d3b39f5461f34661c7f</string>
+              <string>c8debaef04a173b1dd48ec4bd136d194</string>
               <key>hash_algorithm</key>
               <string>md5</string>
               <key>url</key>
-              <string>https://pkg.alchemyviewer.org/repository/autobuild-internal/fmodstudio/windows/fmodstudio-2.01.04.417-windows-417.tar.bz2</string>
+              <string>file:///C:/Users/user/3p-fmodstudio/fmodstudio-2.03.14-windows64-262252253.tar.zst</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -879,21 +879,19 @@
           <map>
             <key>archive</key>
             <map>
-              <key>creds</key>
-              <string>gitlab</string>
               <key>hash</key>
-              <string>7ad5fe064e3a7f45234a3658315a86d80b85f5f49f8a1767e1453116bd23eda67a014c521cf26529fb6bbada3441e64ddffef98ddfa85ae846d8aec72ba6fc70</string>
+              <string>c8debaef04a173b1dd48ec4bd136d194</string>
               <key>hash_algorithm</key>
-              <string>blake2b</string>
+              <string>md5</string>
               <key>url</key>
-              <string>https://git.alchemyviewer.org/api/v4/projects/49/packages/generic/fmodstudio/2.02.06.1475/fmodstudio-2.02.06-windows64-1475.tar.zst</string>
+              <string>file:///C:/Users/user/3p-fmodstudio/fmodstudio-2.03.14-windows64-262252253.tar.zst</string>
             </map>
             <key>name</key>
             <string>windows64</string>
           </map>
         </map>
         <key>version</key>
-        <string>2.02.06</string>
+        <string>2.03.14</string>
       </map>
       <key>fonts</key>
       <map>
@@ -1408,6 +1406,72 @@
         </map>
         <key>version</key>
         <string>1.5.3</string>
+      </map>
+      <key>jsoncpp</key>
+      <map>
+        <key>copyright</key>
+        <string>Copyright (c) 2007-2010 Baptiste Lepilleur</string>
+        <key>description</key>
+        <string>jsoncpp is an implementation of a JSON (http://json.org) reader and writer in C++.</string>
+        <key>license</key>
+        <string>public domain</string>
+        <key>license_file</key>
+        <string>LICENSES/jsoncpp.txt</string>
+        <key>name</key>
+        <string>jsoncpp</string>
+        <key>platforms</key>
+        <map>
+          <key>darwin64</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>87d32aaac4183590c96edd0b6d9bf3e4</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/54846/510106/jsoncpp-0.5.0.538976-darwin64-538976.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>darwin64</string>
+          </map>
+          <key>linux64</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>9a658ae561c75e60bd9c0cee56731d21</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/1475/3274/jsoncpp-0.5.0.501464-linux64-501464.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>linux64</string>
+          </map>
+          <key>windows</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>1b9ac5708cc526d2c5358ef0a427109d</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/54989/511833/jsoncpp-0.5.0.538976-windows64-538976.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>windows</string>
+          </map>
+          <key>windows64</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>1b9ac5708cc526d2c5358ef0a427109d</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/54989/511833/jsoncpp-0.5.0.538976-windows64-538976.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>windows64</string>
+          </map>
+        </map>
+        <key>version</key>
+        <string>0.5.0.538976</string>
       </map>
       <key>libhunspell</key>
       <map>
@@ -2102,11 +2166,11 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>fa39ac8fe3714599293563fb7f964fca</string>
+              <string>fec29528320a2a67ffa7b3900135592d</string>
               <key>hash_algorithm</key>
               <string>md5</string>
               <key>url</key>
-              <string>http://depot.alchemyviewer.org/pub/windows/lib/openal-1.16.0-1.1.0-windows-201504270536.tar.bz2</string>
+              <string>https://depot.alchemyviewer.org/pub/windows64/lib/openal-1.16.0-1.1.0-windows64-201504270534.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -2600,6 +2664,86 @@
         </map>
         <key>version</key>
         <string>0.54.2</string>
+      </map>
+      <key>webrtc</key>
+      <map>
+        <key>platforms</key>
+        <map>
+          <key>darwin64</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>e5601fb27f2fadbdfbc264c29176a478</string>
+              <key>hash_algorithm</key>
+              <string>md5</string>
+              <key>url</key>
+              <string>https://github.com/secondlife/3p-webrtc-build/releases/download/m137.7151.04.23/webrtc-m137.7151.04.23.22004231636-darwin64-22004231636.tar.zst</string>
+            </map>
+            <key>name</key>
+            <string>darwin64</string>
+          </map>
+          <key>linux64</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>5eab2b2138bb8969213587d28fa7d6c9</string>
+              <key>hash_algorithm</key>
+              <string>md5</string>
+              <key>url</key>
+              <string>https://github.com/secondlife/3p-webrtc-build/releases/download/m137.7151.04.23/webrtc-m137.7151.04.23.22004231636-linux64-22004231636.tar.zst</string>
+            </map>
+            <key>name</key>
+            <string>linux64</string>
+          </map>
+          <key>windows</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>ae36f3dcc84b077c4da318017fa9ba80</string>
+              <key>hash_algorithm</key>
+              <string>md5</string>
+              <key>url</key>
+              <string>https://github.com/secondlife/3p-webrtc-build/releases/download/m137.7151.04.23/webrtc-m137.7151.04.23.22004231636-windows64-22004231636.tar.zst</string>
+            </map>
+            <key>name</key>
+            <string>windows</string>
+          </map>
+          <key>windows64</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>ae36f3dcc84b077c4da318017fa9ba80</string>
+              <key>hash_algorithm</key>
+              <string>md5</string>
+              <key>url</key>
+              <string>https://github.com/secondlife/3p-webrtc-build/releases/download/m137.7151.04.23/webrtc-m137.7151.04.23.22004231636-windows64-22004231636.tar.zst</string>
+            </map>
+            <key>name</key>
+            <string>windows64</string>
+          </map>
+        </map>
+        <key>license</key>
+        <string>MIT</string>
+        <key>license_file</key>
+        <string>LICENSES/webrtc-license.txt</string>
+        <key>copyright</key>
+        <string>Copyright (c) 2011, The WebRTC project authors. All rights reserved.</string>
+        <key>version</key>
+        <string>m137.7151.04.23.22004231636</string>
+        <key>name</key>
+        <string>webrtc</string>
+        <key>vcs_branch</key>
+        <string>secondlife</string>
+        <key>vcs_revision</key>
+        <string>d3f62d32bac8694d3c7423c731ae30c113bf6a11</string>
+        <key>vcs_url</key>
+        <string>https://github.com/secondlife/3p-webrtc-build</string>
+        <key>canonical_repo</key>
+        <string>https://github.com/secondlife/3p-webrtc-build</string>
       </map>
       <key>zlib</key>
       <map>

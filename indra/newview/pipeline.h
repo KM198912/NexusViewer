@@ -258,6 +258,12 @@ public:
 	void clearRebuildGroups();
 	void clearRebuildDrawables();
 
+	// Unconditionally drops all pending LLSpatialGroup rebuild references (unlike
+	// clearRebuildGroups(), which preserves HUD groups for mid-session use). Must be
+	// called before region/partition teardown (e.g. on disconnect) so no LLPointer<LLSpatialGroup>
+	// outlives the LLViewerOctreePartition that owns it.
+	void clearAllRebuildGroups();
+
 	//calculate pixel area of given box from vantage point of given camera
 	static F32 calcPixelArea(LLVector3 center, LLVector3 size, LLCamera& camera);
 	static F32 calcPixelArea(const LLVector4a& center, const LLVector4a& size, LLCamera &camera);

@@ -2692,6 +2692,19 @@ void LLPipeline::clearRebuildGroups()
 	mGroupQ2Locked = false;
 }
 
+void LLPipeline::clearAllRebuildGroups()
+{
+	mGroupQ1Locked = true;
+	mGroupQ1.clear();
+	mGroupQ1Locked = false;
+
+	mGroupQ2Locked = true;
+	mGroupQ2.clear();
+	mGroupQ2Locked = false;
+
+	mGroupSaveQ1.clear();
+}
+
 void LLPipeline::clearRebuildDrawables()
 {
 	// Clear all drawables on the priority build queue,

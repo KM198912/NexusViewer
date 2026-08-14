@@ -19,6 +19,7 @@ include(GeneratePrecompiledHeader)
 include(GLOD)
 include(Hunspell)
 include(LLAddBuildTest)
+include(JsonCpp)
 include(LLAppearance)
 include(LLAudio)
 include(LLCharacter)
@@ -45,6 +46,7 @@ include(StateMachine)
 include(TemplateCheck)
 include(UI)
 include(ViewerMiscLibs)
+include(WebRTC)
 include(WinManifest)
 include(ZLIB)
 include(URIPARSER)
@@ -76,6 +78,7 @@ include_directories(
     ${LLRENDER_INCLUDE_DIRS}
     ${LLUI_INCLUDE_DIRS}
     ${LLVFS_INCLUDE_DIRS}
+    ${LIBS_OPEN_DIR}/llwebrtc
     ${LLWINDOW_INCLUDE_DIRS}
     ${LLXML_INCLUDE_DIRS}
     ${HUNSPELL_INCLUDE_DIR}
@@ -581,6 +584,7 @@ set(viewer_SOURCE_FILES
     llvoiceremotectrl.cpp
     llvoicevisualizer.cpp
     llvoicevivox.cpp
+    llvoicewebrtc.cpp
     llvoinventorylistener.cpp
     llvopartgroup.cpp
     llvosky.cpp
@@ -1132,6 +1136,7 @@ set(viewer_HEADER_FILES
     llvoiceremotectrl.h
     llvoicevisualizer.h
     llvoicevivox.h
+    llvoicewebrtc.h
     llvoinventorylistener.h
     llvopartgroup.h
     llvosky.h
@@ -1532,6 +1537,7 @@ if (WINDOWS)
       ${CMAKE_SOURCE_DIR}/../scripts/messages/message_template.msg
       ${SHARED_LIB_STAGING_DIR}/Release/glod.dll
       ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/glod.dll
+      ${SHARED_LIB_STAGING_DIR}/llwebrtc.dll
       ${SHARED_LIB_STAGING_DIR}/Release/SLVoice.exe
       ${SHARED_LIB_STAGING_DIR}/Release/vivoxplatform.dll
       ${GOOGLE_PERF_TOOLS_SOURCE}
@@ -1599,13 +1605,14 @@ if (WINDOWS)
         generate_viewer_version
         stage_third_party_libs
 		llcommon
+        llwebrtc
         ${COPY_INPUT_DEPENDENCIES}
       COMMENT "Performing viewer_manifest copy"
       )
 
     add_custom_target(copy_w_viewer_manifest ALL DEPENDS ${VIEWER_BUILD_DEST_DIR}/copy_touched.bat)
 
-    add_dependencies(${VIEWER_BINARY_NAME} stage_third_party_libs llcommon copy_w_viewer_manifest)
+    add_dependencies(${VIEWER_BINARY_NAME} stage_third_party_libs llcommon llwebrtc copy_w_viewer_manifest)
 
     if (EXISTS ${CMAKE_SOURCE_DIR}/copy_win_scripts)
       add_dependencies(${VIEWER_BINARY_NAME} copy_win_scripts)
@@ -1706,8 +1713,21 @@ target_link_libraries(${VIEWER_BINARY_NAME}
     ${HUNSPELL_LIBRARY}
     ${LLPHYSICSEXTENSIONS_LIBRARIES}
     ${LLAPPEARANCE_LIBRARIES}
+    llwebrtc
+    ${WEBRTC_LIBRARIES}
+    ll::jsoncpp
+    absl::btree
+    absl::core_headers
     absl::flat_hash_map
+    absl::flat_hash_set
+    absl::hash
+    absl::int128
+    absl::memory
+    absl::meta
     absl::node_hash_map
+    absl::node_hash_set
+    absl::optional
+    absl::variant
     nlohmann_json::nlohmann_json
     fmt::fmt
     )
